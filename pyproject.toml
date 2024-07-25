@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Converts from combinational netlists to the BENCH format for DFT"
 authors = ["Mohamed Gaber <donn@efabless.com>"]
 license = "Apache-2.0"
-readme = "README.md"
+readme = "Readme.md"
 include = ["_nl2bench_antlr4_liblogic/*.py", "_nl2bench_antlr4_verilog/*.py"]
 
 [tool.poetry.dependencies]
