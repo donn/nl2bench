@@ -3,9 +3,53 @@
 This projects converts a subset of the Verilog language commonly used for Netlists
 to the Bench format popular with DFT utilities.
 
-The following assumptions are made about the 
+The following assumptions are made about the netlist:
+* It is flat - one module in the one file has everything
+* It is combinational- registers have been cut away and made into inputs
+    * Same goes for macros.
+* There is no tri-state logic in the function
+
+It takes a netlist in combination with the lib files to determine a cell's
+function.
+
+# License
+
+```
+Copyright 2024 Mohamed Gaber
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
 
 ## Third-Party Code
+
+Build infrastructure and CI adapted from [ioplace_parser](https://github.com/),
+owned by Efabless Corporation
+
+```
+Copyright 2023-2024 Efabless Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
 
 Verilog ANTLR Parser by Mustafa Said Ağca
 

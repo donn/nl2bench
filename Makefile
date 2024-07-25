@@ -1,20 +1,21 @@
 PYTHON3 ?= python3
 ANTLR4 ?= antlr4
-
-parsers: $(PWD)/nl2bench/_antlr4_logic_parser $(PWD)/nl2bench/_antlr4_verilog_parser
-
-$(PWD)/nl2bench/_antlr4_logic_parser: $(PWD)/grammars/lib/logic.g4
-	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor $^ -o $@
-
-$(PWD)/nl2bench/_antlr4_verilog_parser: $(PWD)/grammars/verilog/VerilogLexer.g4 $(PWD)/grammars/verilog/VerilogParser.g4
-	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor $^ -o $@
+PARSERS ?= _nl2bench_antlr4_liblogic/LogicParser.py _nl2bench_antlr4_verilog/VerilogParser.py
 
 all: dist
 
 .PHONY: dist
-dist: venv/manifest.txt $(parsers)
+dist: venv/manifest.txt $(PARSERS)
 	./venv/bin/poetry build
+	
+parsers: $(PARSERS)
 
+_nl2bench_antlr4_liblogic/LogicParser.py: grammars/lib/logic.g4
+	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor logic.g4 -o $(PWD)/$(@D)
+
+_nl2bench_antlr4_verilog/VerilogParser.py: grammars/verilog/VerilogLexer.g4 grammars/verilog/VerilogParser.g4
+	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor VerilogLexer.g4 VerilogParser.g4 -o $(PWD)/$(@D)
+	
 .PHONY: lint
 lint: venv/manifest.txt
 	./venv/bin/black --check .
@@ -33,7 +34,7 @@ venv/manifest.txt: ./pyproject.toml
 
 .PHONY: clean
 clean:
-	rm -rf _lef_parser_antlr/
+	rm -rf _nl2bench_antlr4*/
 	rm -rf build/
 	rm -rf dist/
 	rm -rf htmlcov/

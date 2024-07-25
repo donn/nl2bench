@@ -3,9 +3,9 @@ from dataclasses import dataclass, field
 
 from antlr4 import InputStream, CommonTokenStream, ParseTreeWalker, ParserRuleContext
 
-from nl2bench._antlr4_verilog_parser.VerilogParserListener import VerilogParserListener
-from nl2bench._antlr4_verilog_parser.VerilogParser import VerilogParser
-from nl2bench._antlr4_verilog_parser.VerilogLexer import VerilogLexer
+from _nl2bench_antlr4_verilog.VerilogParserListener import VerilogParserListener
+from _nl2bench_antlr4_verilog.VerilogParser import VerilogParser
+from _nl2bench_antlr4_verilog.VerilogLexer import VerilogLexer
 
 
 @dataclass

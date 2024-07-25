@@ -8,8 +8,8 @@ from typing import Iterable, Dict, List
 import click
 from libparse import LibertyParser
 
-import nl2bench.lib_fn_parser as lib_fn_parser
-import nl2bench.nl_parser as nl_parser
+from . import lib_fn_parser
+from . import nl_parser
 
 
 @dataclass

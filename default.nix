@@ -49,7 +49,7 @@ in
       black
     ];
 
-    preBuild = "make";
+    preBuild = "make parsers";
     checkPhase = "pytest";
 
     meta = {

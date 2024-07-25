@@ -4,3 +4,5 @@ _antlr4*
 .antlr
 requirements_tmp.txt
 **/.DS_Store
+/dist
+_nl2bench_antlr4*

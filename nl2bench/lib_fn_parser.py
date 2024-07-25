@@ -1,9 +1,9 @@
 from antlr4 import InputStream, CommonTokenStream
 
-from nl2bench._antlr4_logic_parser.logicListener import logicListener
-from nl2bench._antlr4_logic_parser.logicParser import logicParser
-from nl2bench._antlr4_logic_parser.logicVisitor import logicVisitor
-from nl2bench._antlr4_logic_parser.logicLexer import logicLexer
+from _nl2bench_antlr4_liblogic.logicListener import logicListener
+from _nl2bench_antlr4_liblogic.logicParser import logicParser
+from _nl2bench_antlr4_liblogic.logicVisitor import logicVisitor
+from _nl2bench_antlr4_liblogic.logicLexer import logicLexer
 
 
 class _Listener(logicListener):
