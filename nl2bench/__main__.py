@@ -107,6 +107,17 @@ def transform_function_rec(
         raise ValueError(f"Unknown lib function {current_function[0]}.")
 
 
+def to_bench_ios(port: nl_parser.Port, f: TextIOWrapper):
+    if port.msb is None:
+        print(f"{port.direction.upper()}({n(port.name)})", file=f)
+    else:
+        frm, to = min(port.msb, port.lsb), max(port.lsb, port.msb)
+        i = frm
+        while i <= to:
+            print(f"{port.direction.upper()}({n(port.name)}[{i}])", file=f)
+            i += 1
+
+
 def to_bench_statements(inst: nl_parser.Instance, base: Cell, f: TextIOWrapper):
     for output, function in base.outputs.items():
         output_hooked_to = inst.io[output]
@@ -143,10 +154,11 @@ def cli(
     )
 
     netlist = nl_parser.parse(open(netlist_in).read())
+
     with open(output, "w", encoding="utf8") as f:
         print("# Automatically generated. Do not modify.", file=f)
-        for input in netlist.inputs:
-            print(f"INPUT({n(input)})", file=f)
+        for port in netlist.ports.values():
+            to_bench_ios(port, f)
         for inst in netlist.instances:
             assert (
                 inst.kind in cells
@@ -155,8 +167,6 @@ def cli(
             to_bench_statements(inst, base, f)
         for asst in netlist.assignments:
             print(f"{n(asst[0])} = BUFF({n(asst[1])})", file=f)
-        for output in netlist.outputs:
-            print(f"OUTPUT({n(output)})", file=f)
 
 
 if __name__ == "__main__":

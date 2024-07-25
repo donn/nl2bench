@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple
+from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
 
 from antlr4 import InputStream, CommonTokenStream, ParseTreeWalker, ParserRuleContext
@@ -16,10 +16,17 @@ class Instance:
 
 
 @dataclass
+class Port:
+    name: str
+    direction: str = "Unknown"
+    msb: Optional[int] = None
+    lsb: Optional[int] = None
+
+
+@dataclass
 class Netlist:
     module: str = ""
-    inputs: List[str] = field(default_factory=lambda: [])
-    outputs: List[str] = field(default_factory=lambda: [])
+    ports: Dict[str, Port] = field(default_factory=lambda: {})
     instances: List[Instance] = field(default_factory=lambda: [])
     assignments: List[Tuple[str, str]] = field(default_factory=lambda: [])
 
@@ -42,29 +49,33 @@ class _Listener(VerilogParserListener):
         self.netlist.module = self.getText(ctx.children[1])
         return super().enterModule_declaration(ctx)
 
-    def ranged_declaration(self, ref, ctx):
+    def enterList_of_port_declarations(
+        self, ctx: VerilogParser.List_of_port_declarationsContext
+    ):
+        for port in ctx.port():
+            name = self.getText(port)
+            self.netlist.ports[name] = Port(name=name)
+        return super().enterList_of_port_declarations(ctx)
+
+    def ranged_declaration(self, dir, ctx):
         frm, to = None, None
         if range := ctx.range_():
             frm = int(self.getText(range.msb_constant_expression()))
             to = int(self.getText(range.lsb_constant_expression()))
-            frm, to = min(frm, to), max(frm, to)
 
         for child in ctx.list_of_port_identifiers().children:
             name = self.getText(child)
-            if frm is not None:
-                i = frm
-                while i <= to:
-                    ref.append(f"{name}[{i}]")
-                    i += 1
-            else:
-                ref.append(name)
+            self.netlist.ports[name] = self.netlist.ports[name] or Port(name=name)
+            self.netlist.ports[name].direction = dir
+            self.netlist.ports[name].msb = frm
+            self.netlist.ports[name].lsb = to
 
     def enterInput_declaration(self, ctx: VerilogParser.Input_declarationContext):
-        self.ranged_declaration(self.netlist.inputs, ctx)
+        self.ranged_declaration("input", ctx)
         return super().enterInput_declaration(ctx)
 
     def enterOutput_declaration(self, ctx: VerilogParser.Output_declarationContext):
-        self.ranged_declaration(self.netlist.outputs, ctx)
+        self.ranged_declaration("output", ctx)
         return super().enterOutput_declaration(ctx)
 
     def enterModule_instantiation(self, ctx: VerilogParser.Module_instantiationContext):

@@ -1,16 +1,20 @@
 # Verilog Netlist to Bench Converter
 
-This projects converts a subset of the Verilog language commonly used for Netlists
-to the Bench format popular with DFT utilities.
+This projects converts a subset of the Verilog language commonly used for
+Netlists to the Bench format popular with DFT utilities.
 
 The following assumptions are made about the netlist:
-* It is flat - one module in the one file has everything
+
+* It is a flat netlist - one module in the one file has everything, with no
+  parameters.
 * It is combinational- registers have been cut away and made into inputs
     * Same goes for macros.
-* There is no tri-state logic in the function
+* The ports are declared first in the header, bare, then ranges and polarities
+  are defined out-of-line.
+* There is no tri-state logic in the netlist.
 
-It takes a netlist in combination with the lib files to determine a cell's
-function.
+It takes a netlist in combination with lib files. The latter are used to
+determine cells' functions.
 
 # License
 
