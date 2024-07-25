@@ -86,7 +86,12 @@ def transform_function_rec(
             assert arg in inst.io, "Unrecognized input port "
             return n(inst.io[arg])
 
-    if current_function[0] == "!":
+    if isinstance(current_function, str):
+        print(
+            f"{current_output} = BUF({handle_argument(current_function)})",
+            file=f,
+        )
+    elif current_function[0] == "!":
         print(f"{current_output} = NOT({handle_argument(current_function[1])})", file=f)
     elif current_function[0] == "&":
         print(
@@ -104,7 +109,9 @@ def transform_function_rec(
             file=f,
         )
     else:
-        raise ValueError(f"Unknown lib function {current_function[0]}.")
+        raise ValueError(
+            f"Unknown lib function {current_function} of type {type(current_function)} in {inst}."
+        )
 
 
 def to_bench_ios(port: nl_parser.Port, f: TextIOWrapper):
@@ -166,7 +173,7 @@ def cli(
             base = cells[inst.kind]
             to_bench_statements(inst, base, f)
         for asst in netlist.assignments:
-            print(f"{n(asst[0])} = BUFF({n(asst[1])})", file=f)
+            print(f"{n(asst[0])} = BUF({n(asst[1])})", file=f)
 
 
 if __name__ == "__main__":
