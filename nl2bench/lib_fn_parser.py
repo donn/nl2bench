@@ -23,13 +23,14 @@ class _Visitor(logicVisitor):
         if len(children) == 2:
             # guaranteed to be and at this point
             return ("&", self.visit(ctx.children[0]), self.visit(ctx.children[1]))
-        # guaranteed to be xor or or
-        return (children[1], self.visit(ctx.children[0]), self.visit(ctx.children[2]))
+        operator = children[1]
+        if operator == "|":
+            operator = "+"
+        return (operator, self.visit(ctx.children[0]), self.visit(ctx.children[2]))
 
 
 def parse(function: str):
     listener = _Listener()
-
     stream = InputStream(function)
 
     lexer = logicLexer(stream)

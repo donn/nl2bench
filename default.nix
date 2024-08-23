@@ -1,5 +1,5 @@
 {
-  antlr4_10,
+  antlr4_9,
   click,
   libparse,
   black,
@@ -11,9 +11,9 @@
   pytest,
   coverage,
 }: let
-  antlr4_10-python3-runtime = buildPythonPackage rec {
+  antlr4_9-python3-runtime = buildPythonPackage rec {
     pname = "antlr4-python3-runtime";
-    inherit (antlr4_10.runtime.cpp) version src;
+    inherit (antlr4_9.runtime.cpp) version src;
 
     sourceRoot = "source/runtime/Python3";
 
@@ -35,11 +35,11 @@ in
 
     nativeBuildInputs = [
       poetry-core
-      antlr4_10
+      antlr4_9
     ];
 
     propagatedBuildInputs = [
-      antlr4_10-python3-runtime
+      antlr4_9-python3-runtime
       click
       libparse
     ];

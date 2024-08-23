@@ -1,13 +1,13 @@
 import os
 import pytest
-from nl2bench.__main__ import cli
+from nl2bench import cli
 
 
 @pytest.mark.parametrize(
     ("lib", "netlist"),
     [
-        ("test.lib", "test.v"),
-        ("test.lib", "test2.v"),
+        ("osu035_stdcells.lib", "osu035_nl1.v"),
+        ("osu035_stdcells.lib", "osu035_nl2.v"),
     ],
 )
 def testy_basic(lib, netlist):

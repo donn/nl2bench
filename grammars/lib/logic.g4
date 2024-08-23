@@ -7,12 +7,16 @@ function:
 	| function function
 	| function XOR function
 	| function OR function
+	| function OR2 function
+	| function AND function
 	| INPUT;
 
 LPAREN: '(';
 RPAREN: ')';
 OR: '+';
+OR2: '|';
 XOR: '^';
 NOT: '!';
-INPUT: [A-Za-z0-9]+;
+AND: '&';
+INPUT: [A-Za-z0-9_]+;
 WHITESPACE: [ \n\t\r]+ -> skip;

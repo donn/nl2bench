@@ -38,9 +38,9 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get install -y antlr4
-          curl -LO https://github.com/antlr/website-antlr4/raw/gh-pages/download/antlr-4.10.1-complete.jar
+          curl -LO https://github.com/antlr/website-antlr4/raw/gh-pages/download/antlr-4.9.3-complete.jar
       - name: Build Distribution
-        run: make ANTLR4="java -jar antlr-4.10.1-complete.jar"
+        run: make ANTLR4="java -jar antlr-4.9.3-complete.jar"
       - name: Set default for env.NEW_TAG
         run: echo "NEW_TAG=NO_NEW_TAG" >> $GITHUB_ENV
       - name: Check for new version

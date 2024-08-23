@@ -22,7 +22,7 @@ lint: venv/manifest.txt
 	./venv/bin/flake8 .
 
 venv: venv/manifest.txt
-venv/manifest.txt: ./pyproject.toml
+venv/manifest.txt: ./pyproject.toml ./poetry.lock
 	rm -rf venv
 	python3 -m venv ./venv
 	PYTHONPATH= ./venv/bin/python3 -m pip install --upgrade pip
