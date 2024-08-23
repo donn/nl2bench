@@ -1,21 +1,22 @@
+from io import StringIO, TextIOWrapper
 import os
 import pytest
-from nl2bench import cli
+from nl2bench.nl2bench import verilog_netlist_to_bench
 
 
 @pytest.mark.parametrize(
-    ("lib", "netlist"),
+    ("scl", "design"),
     [
-        ("osu035_stdcells.lib", "osu035_nl1.v"),
-        ("osu035_stdcells.lib", "osu035_nl2.v"),
+        ("osu035", "s298"),
+        ("osu035", "spm"),
     ],
 )
-def testy_basic(lib, netlist):
-    with pytest.raises(SystemExit, match="0"):
-        cli(
-            [
-                "--lib-file",
-                os.path.join(pytest.test_root, "designs", lib),
-                os.path.join(pytest.test_root, "designs", netlist),
-            ]
-        )
+def testy_basic(scl, design,):
+    netlist = os.path.join(pytest.test_root, "designs", design, scl, "nl.v")
+    lib = os.path.join(pytest.test_root, "tech", f"{scl}.lib")
+    expected = os.path.join(pytest.test_root, "designs", design, scl, "nl.bench")
+    with StringIO() as sio, open(expected) as f:
+        verilog_netlist_to_bench(netlist, [lib], sio)
+        assert f.read() == sio.getvalue()
+        
+        
