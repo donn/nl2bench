@@ -20,7 +20,6 @@ import frozendict
 from .lib_fn_parser import parse
 
 
-
 def lib_group_as_dict(entry) -> dict:
     retval = {
         "args": tuple(entry.args),
@@ -31,6 +30,7 @@ def lib_group_as_dict(entry) -> dict:
             value = lib_group_as_dict(value)
         retval[child.id] = child.value
     return retval
+
 
 @dataclass(frozen=True)
 class TestInfo:
@@ -59,13 +59,18 @@ class Cell:
         test_info = None
         for cell_element in cell_ast.children:
             if cell_element.id in ["ff", "latch"]:
-                register_info = (cell_element.id, frozendict.deepfreeze(lib_group_as_dict(cell_element)))
+                register_info = (
+                    cell_element.id,
+                    frozendict.deepfreeze(lib_group_as_dict(cell_element)),
+                )
         for cell_element in cell_ast.children:
             if cell_element.id == "test_cell":
                 test_info_dict = {}
                 for test_element in cell_element.children:
                     if test_element.id == "ff":
-                        test_info_dict["testing_ff"] = frozendict.deepfreeze(lib_group_as_dict(test_element))
+                        test_info_dict["testing_ff"] = frozendict.deepfreeze(
+                            lib_group_as_dict(test_element)
+                        )
                     elif test_element.id == "pin":
                         pin_info = lib_group_as_dict(test_element)
                         pin_name = test_element.args[0]
@@ -76,7 +81,7 @@ class Cell:
                                 test_info_dict["sci"] = pin_name
                             elif sigtype == "test_scan_enable":
                                 test_info_dict["sce"] = pin_name
-                test_info = TestInfo(**test_info_dict)                                
+                test_info = TestInfo(**test_info_dict)
             if cell_element.id == "pin":
                 function = None
                 direction = None
