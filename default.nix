@@ -8,6 +8,7 @@
   buildPythonPackage,
   poetry-core,
   setuptools,
+  frozendict,
   pytest,
   coverage,
 }: let
@@ -42,6 +43,7 @@ in
       antlr4_9-python3-runtime
       click
       libparse
+      frozendict
     ];
 
     nativeCheckInputs = [
