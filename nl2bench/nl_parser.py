@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import re
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
 
@@ -42,6 +43,12 @@ class Netlist:
     ports: Dict[str, Port] = field(default_factory=lambda: {})
     instances: List[Instance] = field(default_factory=lambda: [])
     assignments: List[Tuple[str, str]] = field(default_factory=lambda: [])
+    
+    
+escaped_id = re.compile(r"\\([^ ]+) ")
+def dirtiest_workaround_imaginable(str_in: str):
+    subbed =  escaped_id.sub(r"\1", str_in)
+    return subbed
 
 
 class _Listener(VerilogParserListener):
@@ -53,7 +60,7 @@ class _Listener(VerilogParserListener):
             token_source = of.start.getTokenSource()
             input_stream = token_source.inputStream
             start, stop = of.start.start, of.stop.stop
-            return input_stream.getText(start, stop)
+            return dirtiest_workaround_imaginable(input_stream.getText(start, stop))
         except AttributeError:
             return ""
 
