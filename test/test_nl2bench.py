@@ -10,6 +10,7 @@ from nl2bench.nl2bench import verilog_netlist_to_bench
     [
         ("osu035", "s298"),
         ("osu035", "spm"),
+        ("osu035", "aes128"),
     ],
 )
 def testy_basic(

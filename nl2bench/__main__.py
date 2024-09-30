@@ -22,10 +22,7 @@ from .nl2bench import verilog_netlist_to_bench
 
 @click.command()
 @click.option(
-    "-o",
-    "--output",
-    default="/dev/stdout" if os.name == "posix" else None,
-    required=True,
+    "-o", "--output", default=None, help="If not set, replacing .v with .bench"
 )
 @click.option(
     "-l",
@@ -43,8 +40,14 @@ def cli(
     netlist_in: str,
     lib_files: Iterable[str],
 ):
+    if output is None:
+        output = netlist_in
+        if output.endswith(".v"):
+            output = output[:-2]
+        output = f"{output}.bench"
     with open(output, "w", encoding="utf8") as f:
         verilog_netlist_to_bench(Path(netlist_in), lib_files, f)
+    print(f"Successfully saved to {output}.")
 
 
 if __name__ == "__main__":

@@ -82,20 +82,28 @@ def _dump_sigchunk(chunk: ys.SigChunk):
             return f"{wire_name}[{chunk.offset + chunk.wire.start_offset}]"
 
 
+def _dump_sigbit(bit: ys.SigBit):
+    assert bit.wire, "constants not supported"
+    if bit.wire.width == 1:
+        return _clean_str(bit.wire.name)
+    else:
+        return f"{_clean_str(bit.wire.name)}[{bit.offset}]"
+
+
 def parse(verilog_netlist: Path):
     d = ys.Design()
-    ys.run_pass(f"read_verilog {shlex.quote(verilog_netlist)}", d)
+    ys.run_pass(f"read_verilog {shlex.quote(str(verilog_netlist))}", d)
     ys.run_pass(f"hierarchy -auto-top")
     ys.run_pass(f"flatten")
     ys.run_pass(f"splitnets")
 
     ys_module = d.top_module()
 
-    ports: Dict[str, Port] = {}
-
-    # keep insertion order
-    for port in ys_module.ports:
-        ports[_clean_str(port)] = Port(name=_clean_str(port))
+    ports: Dict[str, Port] = {
+        # just to keep declaration order
+        _clean_str(port): Port(name=_clean_str(port))
+        for port in ys_module.ports
+    }
 
     for wire_idstr in ys_module.wires_:
         wire = ys_module.wire(wire_idstr)
@@ -114,15 +122,16 @@ def parse(verilog_netlist: Path):
             if upto:
                 msb, lsb = lsb, msb
         ports[port_name] = Port(
-            port_name, "input" if wire.port_input else "output", msb, lsb
+            port_name,
+            "input" if wire.port_input else "output",
+            msb,
+            lsb,
         )
 
     assignments: List[Tuple[str, str]] = []
     for conn_from, conn_to in ys_module.connections():
-        # splitnets - we're sure that we're using one bit
-        assignments.append(
-            (_dump_sigchunk(conn_from.as_chunk()), _dump_sigchunk(conn_to.as_chunk()))
-        )
+        for bit_from, bit_to in zip(conn_from.bits(), conn_to.bits()):
+            assignments.append((_dump_sigbit(bit_from), _dump_sigbit(bit_to)))
 
     instances: List[Instance] = []
     for cell_idstr in ys_module.cells_:
