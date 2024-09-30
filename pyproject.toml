@@ -13,7 +13,7 @@ click = ">=8,<9"
 antlr4-python3-runtime = "==4.9.*"
 libparse = "^0.3.1"
 frozendict = "^2.4.4"
-
+pyosys = "^0.44"
 
 [tool.poetry.dev-dependencies]
 wheel = "*"

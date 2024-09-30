@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import os
+from pathlib import Path
 from typing import Iterable
 
 import click
@@ -43,7 +44,7 @@ def cli(
     lib_files: Iterable[str],
 ):
     with open(output, "w", encoding="utf8") as f:
-        verilog_netlist_to_bench(netlist_in, lib_files, f)
+        verilog_netlist_to_bench(Path(netlist_in), lib_files, f)
 
 
 if __name__ == "__main__":

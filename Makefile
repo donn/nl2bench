@@ -1,6 +1,6 @@
 PYTHON3 ?= python3
 ANTLR4 ?= antlr4
-PARSERS ?= _nl2bench_antlr4_liblogic/LogicParser.py _nl2bench_antlr4_verilog/VerilogParser.py
+PARSERS ?= _nl2bench_antlr4_liblogic/LogicParser.py
 
 all: dist
 
@@ -12,9 +12,6 @@ parsers: $(PARSERS)
 
 _nl2bench_antlr4_liblogic/LogicParser.py: grammars/lib/logic.g4
 	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor logic.g4 -o $(PWD)/$(@D)
-
-_nl2bench_antlr4_verilog/VerilogParser.py: grammars/verilog/VerilogLexer.g4 grammars/verilog/VerilogParser.g4
-	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor VerilogLexer.g4 VerilogParser.g4 -o $(PWD)/$(@D)
 	
 .PHONY: lint
 lint: venv/manifest.txt
