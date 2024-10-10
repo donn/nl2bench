@@ -11,6 +11,8 @@
   frozendict,
   pytest,
   coverage,
+  yosys,
+  quaigh,
 }: let
   antlr4_9-python3-runtime = buildPythonPackage rec {
     pname = "antlr4-python3-runtime";
@@ -44,11 +46,13 @@ in
       click
       libparse
       frozendict
+      yosys.pyosys
     ];
 
     nativeCheckInputs = [
       pytest
       black
+      quaigh
     ];
 
     preBuild = "make parsers";

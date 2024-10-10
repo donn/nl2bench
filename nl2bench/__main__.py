@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import os
+from pathlib import Path
 from typing import Iterable
 
 import click
@@ -21,10 +21,7 @@ from .nl2bench import verilog_netlist_to_bench
 
 @click.command()
 @click.option(
-    "-o",
-    "--output",
-    default="/dev/stdout" if os.name == "posix" else None,
-    required=True,
+    "-o", "--output", default=None, help="If not set, replacing .v with .bench"
 )
 @click.option(
     "-l",
@@ -42,8 +39,14 @@ def cli(
     netlist_in: str,
     lib_files: Iterable[str],
 ):
+    if output is None:
+        output = netlist_in
+        if output.endswith(".v"):
+            output = output[:-2]
+        output = f"{output}.bench"
     with open(output, "w", encoding="utf8") as f:
-        verilog_netlist_to_bench(netlist_in, lib_files, f)
+        verilog_netlist_to_bench(Path(netlist_in), lib_files, f)
+    print(f"Successfully saved to {output}.")
 
 
 if __name__ == "__main__":

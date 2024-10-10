@@ -22,7 +22,8 @@
   };
 
   inputs = {
-    nix-eda.url = github:efabless/nix-eda;
+    nix-eda.url = github:efabless/nix-eda/yosys_python_flag;
+    quaigh.url = github:coloquinte/quaigh;
     libparse.url = github:efabless/libparse-python;
   };
 
@@ -32,13 +33,14 @@
     self,
     nix-eda,
     libparse,
+    quaigh,
     ...
   }: {
     # Outputs
     packages =
       nix-eda.forAllSystems {
         current = self;
-        withInputs = [libparse];
+        withInputs = [nix-eda libparse quaigh];
       } (util:
         with util; let
           self = {

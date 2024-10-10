@@ -16,6 +16,6 @@ exclude =
     build/,
     pdk/,
     venv/,
-    nl2bench/_antlr4*
+    _nl2bench_antlr4*/,
 per-file-ignores =
     */__init__.py:F401
