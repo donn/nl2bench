@@ -18,6 +18,8 @@ def testy_basic(
     design,
 ):
     netlist = os.path.join(pytest.test_root, "designs", design, scl, "nl.v")
+    if not os.path.exists(netlist):
+        netlist = os.path.join(pytest.test_root, "designs", design, scl, "nl.v.gz")
     lib = os.path.join(pytest.test_root, "tech", f"{scl}.lib")
     expected = os.path.join(pytest.test_root, "designs", design, scl, "nl.bench")
     with NamedTemporaryFile("w", suffix=".bench") as f:
