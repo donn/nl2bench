@@ -93,9 +93,9 @@ def _dump_sigbit(bit: ys.SigBit):
 def parse(verilog_netlist: Path):
     d = ys.Design()
     ys.run_pass(f"read_verilog {shlex.quote(str(verilog_netlist))}", d)
-    ys.run_pass(f"hierarchy -auto-top")
-    ys.run_pass(f"flatten")
-    ys.run_pass(f"splitnets")
+    ys.run_pass("hierarchy -auto-top")
+    ys.run_pass("flatten")
+    ys.run_pass("splitnets")
 
     ys_module = d.top_module()
 
