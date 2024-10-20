@@ -22,12 +22,16 @@
   };
 
   inputs = {
-    nix-eda.url = github:efabless/nix-eda/yosys_python_flag;
-    quaigh.url = github:coloquinte/quaigh;
-    libparse.url = github:efabless/libparse-python;
+    nix-eda.url = github:efabless/nix-eda;
+    quaigh = {
+      url = github:coloquinte/quaigh;
+      inputs.nixpkgs.follows = "nix-eda/nixpkgs";
+    };
+    libparse = {
+      url = github:efabless/libparse-python;
+      inputs.nixpkgs.follows = "nix-eda/nixpkgs";
+    };
   };
-
-  inputs.libparse.inputs.nixpkgs.follows = "nix-eda/nixpkgs";
 
   outputs = {
     self,
@@ -35,19 +39,33 @@
     libparse,
     quaigh,
     ...
-  }: {
+  }: let
+    nixpkgs = nix-eda.inputs.nixpkgs;
+    lib = nixpkgs.lib;
+  in {
+    overlays = {
+      default = lib.composeManyExtensions [
+        (nix-eda.flakesToOverlay [libparse quaigh]) 
+        (nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
+          callPythonPackage = lib.callPackageWith (pkgs' // pkgs'.python3.pkgs);
+        in {
+          nl2bench = callPythonPackage ./default.nix {};
+        }))
+      ];
+    };
+
+    legacyPackages = nix-eda.forAllSystems (
+      system:
+        import nixpkgs {
+          inherit system;
+          overlays = [nix-eda.overlays.default self.overlays.default];
+        }
+    );
+
     # Outputs
-    packages =
-      nix-eda.forAllSystems {
-        current = self;
-        withInputs = [nix-eda libparse quaigh];
-      } (util:
-        with util; let
-          self = {
-            nl2bench = callPythonPackage ./default.nix {};
-            default = self.nl2bench;
-          };
-        in
-          self);
+    packages = nix-eda.forAllSystems (system: {
+      inherit (self.legacyPackages.${system}.python3.pkgs) nl2bench;
+      default = self.packages.${system}.nl2bench;
+    });
   };
 }

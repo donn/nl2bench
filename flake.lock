@@ -85,16 +85,15 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1727616983,
-        "narHash": "sha256-v9EI3VVEFTTnhLsdINyjXdHjxyfUp+7OcCufkvW+fN0=",
+        "lastModified": 1728905391,
+        "narHash": "sha256-iox9yGNG4MwSKhQuwegLcDW6wVGzfdBPrh8SrhSLA8c=",
         "owner": "efabless",
         "repo": "nix-eda",
-        "rev": "e378e1df26d789d62f2a61d93137df0b1d44a443",
+        "rev": "0814aa6c1c7d556aa08212cc875063cff62cb9b0",
         "type": "github"
       },
       "original": {
         "owner": "efabless",
-        "ref": "yosys_python_flag",
         "repo": "nix-eda",
         "type": "github"
       }
@@ -115,33 +114,20 @@
         "type": "github"
       }
     },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1717144377,
-        "narHash": "sha256-F/TKWETwB5RaR8owkPPi+SPJh83AQsm6KrQAlJ8v/uA=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "805a384895c696f802a9bf5bf4720f37385df547",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-24.05",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "quaigh": {
       "inputs": {
         "cargo2nix": "cargo2nix",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": [
+          "nix-eda",
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1722162293,
-        "narHash": "sha256-WILtL6WKXs5pB5Jujx9HIT2w1jiVTZymXC7DTuqLPEM=",
+        "lastModified": 1729427523,
+        "narHash": "sha256-UJ+C6gDRryV7fdj4Go0VWyyLFLT1xIJR6gtFoxp01FU=",
         "owner": "coloquinte",
         "repo": "quaigh",
-        "rev": "2fec998178d4e48c5379dd0a2025f8688797f99a",
+        "rev": "882aee86c2d2f5e3af97be5e5106af710fa9175c",
         "type": "github"
       },
       "original": {
