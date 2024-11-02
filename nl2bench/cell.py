@@ -47,10 +47,12 @@ class Cell:
     inouts: List[str]
     register_info: Optional[Tuple[str, frozendict.frozendict]]
     test_info: Optional[TestInfo]
+    raw: frozendict.frozendict
 
     @staticmethod
     def _from_ast(cell_ast) -> "Cell":
         name = cell_ast.args[0]
+        raw = lib_group_as_dict(cell_ast)
 
         inputs = []
         outputs = {}
@@ -101,7 +103,7 @@ class Cell:
                 else:
                     inouts.append(cell_element.args)
 
-        return name, Cell(inputs, outputs, inouts, register_info, test_info)
+        return name, Cell(inputs, outputs, inouts, register_info, test_info, raw)
 
     @staticmethod
     def from_lib_file(path: str) -> Dict[str, "Cell"]:

@@ -30,6 +30,13 @@ from .nl2bench import verilog_netlist_to_bench
     multiple=True,
     type=click.Path(file_okay=True, exists=True),
 )
+@click.option(
+    "-b",
+    "--bypassing",
+    "bypassed_ports",
+    multiple=True,
+    type=str,
+)
 @click.argument(
     "netlist_in",
     type=click.Path(file_okay=True, exists=True),
@@ -37,6 +44,7 @@ from .nl2bench import verilog_netlist_to_bench
 def cli(
     output: str,
     netlist_in: str,
+    bypassing: Iterable[str],
     lib_files: Iterable[str],
 ):
     if output is None:
@@ -45,7 +53,7 @@ def cli(
             output = output[:-2]
         output = f"{output}.bench"
     with open(output, "w", encoding="utf8") as f:
-        verilog_netlist_to_bench(Path(netlist_in), lib_files, f)
+        verilog_netlist_to_bench(Path(netlist_in), lib_files, f, set(bypassing))
     print(f"Successfully saved to {output}.")
 
 
