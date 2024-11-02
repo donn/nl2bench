@@ -44,7 +44,7 @@ from .nl2bench import verilog_netlist_to_bench
 def cli(
     output: str,
     netlist_in: str,
-    bypassing: Iterable[str],
+    bypassed_ports: Iterable[str],
     lib_files: Iterable[str],
 ):
     if output is None:
@@ -53,7 +53,9 @@ def cli(
             output = output[:-2]
         output = f"{output}.bench"
     with open(output, "w", encoding="utf8") as f:
-        verilog_netlist_to_bench(Path(netlist_in), lib_files, f, set(bypassing))
+        verilog_netlist_to_bench(
+            Path(netlist_in), lib_files, f, bypass_ios=set(bypassed_ports)
+        )
     print(f"Successfully saved to {output}.")
 
 
