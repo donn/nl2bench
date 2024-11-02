@@ -33,18 +33,20 @@ def transform_function_rec(
     f: TextIOWrapper,
     depth=0,
 ):
-    counter = 0
+    argi = 0
     current_output = n(current_output)
 
     def handle_argument(arg):
-        nonlocal counter
+        nonlocal argi
         if isinstance(arg, tuple):
-            intermediate = f"{inst.name}.{depth}.{counter}"
-            counter += 1
+            intermediate = current_output + f".{argi}"
+            argi += 1
             transform_function_rec(intermediate, arg, inst, f, depth + 1)
             return intermediate
         else:
-            assert arg in inst.io, f"Unrecognized input port {arg}"
+            assert (
+                arg in inst.io
+            ), f"Unrecognized input port {arg} in {inst.name} of kind {inst.kind}"
             return n(inst.io[arg])
 
     if isinstance(current_function, str):
