@@ -83,11 +83,18 @@ def _dump_sigchunk(chunk: ys.SigChunk):
 
 
 def _dump_sigbit(bit: ys.SigBit):
-    assert bit.wire, "constants not supported"
-    if bit.wire.width == 1:
-        return _clean_str(bit.wire.name)
+    if bit.is_wire():
+        if bit.wire.width == 1:
+            return _clean_str(bit.wire.name)
+        else:
+            return f"{_clean_str(bit.wire.name)}[{bit.offset}]"
     else:
-        return f"{_clean_str(bit.wire.name)}[{bit.offset}]"
+        if bit.data == ys.State.S1:
+            return 1
+        elif bit.data == ys.State.S0:
+            return 0
+        else:
+            assert "unknown constants not supported"
 
 
 def parse(verilog_netlist: Path):

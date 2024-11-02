@@ -125,7 +125,12 @@ def netlist_to_bench(
         base = cells[inst.kind]
         statements_to_bench(inst, base, f)
     for asst in netlist.assignments:
-        print(f"{n(asst[0])} = BUF({n(asst[1])})", file=f)
+        if asst[1] == 0:
+            print(f"{n(asst[0])} = VSS()", file=f)
+        elif asst[1] == 1:
+            print(f"{n(asst[0])} = VDD()", file=f)
+        else:
+            print(f"{n(asst[0])} = BUF({n(asst[1])})", file=f)
 
 
 def verilog_netlist_to_bench(
