@@ -52,9 +52,19 @@ def cli(
         if output.endswith(".v"):
             output = output[:-2]
         output = f"{output}.bench"
+    bypass_ios = {}
+    for pair in bypassed_ports:
+        parts = pair.split("=")
+        if len(parts) == 2:
+            bypass_ios[parts[0]] = int(parts[1])
+        else:
+            bypass_ios[parts[0]] = 1
     with open(output, "w", encoding="utf8") as f:
         verilog_netlist_to_bench(
-            Path(netlist_in), lib_files, f, bypass_ios=set(bypassed_ports)
+            Path(netlist_in),
+            lib_files,
+            f,
+            bypass_ios,
         )
     print(f"Successfully saved to {output}.")
 

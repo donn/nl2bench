@@ -90,9 +90,9 @@ def _dump_sigbit(bit: ys.SigBit):
             return f"{_clean_str(bit.wire.name)}[{bit.offset}]"
     else:
         if bit.data == ys.State.S1:
-            return 1
+            return "1"
         elif bit.data == ys.State.S0:
-            return 0
+            return "0"
         else:
             assert "unknown constants not supported"
 
