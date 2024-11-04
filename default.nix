@@ -1,5 +1,4 @@
 {
-  antlr4_9,
   click,
   libparse,
   black,
@@ -13,22 +12,9 @@
   coverage,
   yosys,
   quaigh,
-}: let
-  antlr4_9-python3-runtime = buildPythonPackage rec {
-    pname = "antlr4-python3-runtime";
-    inherit (antlr4_9.runtime.cpp) version src;
-
-    sourceRoot = "source/runtime/Python3";
-
-    doCheck = false;
-
-    meta = with lib; {
-      description = "Runtime for ANTLR";
-      homepage = "https://www.antlr.org/";
-      license = licenses.bsd3;
-    };
-  };
-in
+  antlr4_9,
+  antlr4_9-runtime,
+}:
   buildPythonPackage {
     name = "nl2bench";
     version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).tool.poetry.version;
@@ -42,7 +28,7 @@ in
     ];
 
     propagatedBuildInputs = [
-      antlr4_9-python3-runtime
+      antlr4_9-runtime
       click
       libparse
       frozendict
