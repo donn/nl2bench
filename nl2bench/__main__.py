@@ -37,6 +37,11 @@ from .nl2bench import verilog_netlist_to_bench
     multiple=True,
     type=str,
 )
+@click.option(
+    "--msb-first/--lsb-first",
+    default=False,
+    type=bool,
+)
 @click.argument(
     "netlist_in",
     type=click.Path(file_okay=True, exists=True),
@@ -46,6 +51,7 @@ def cli(
     netlist_in: str,
     bypassed_ports: Iterable[str],
     lib_files: Iterable[str],
+    msb_first: bool,
 ):
     if output is None:
         output = netlist_in
@@ -54,7 +60,11 @@ def cli(
         output = f"{output}.bench"
     with open(output, "w", encoding="utf8") as f:
         verilog_netlist_to_bench(
-            Path(netlist_in), lib_files, f, bypass_ios=set(bypassed_ports)
+            Path(netlist_in),
+            lib_files,
+            f,
+            bypass_ios=set(bypassed_ports),
+            msb_first=msb_first,
         )
     print(f"Successfully saved to {output}.")
 
