@@ -109,8 +109,10 @@ def io_to_bench(port: nl_parser.Port, f: TextIOWrapper, msb_first: bool = False)
 def statements_to_bench(inst: nl_parser.Instance, base: Cell, f: TextIOWrapper):
     for output, function in base.outputs.items():
         if hooked := inst.io.get(output):
+            # HACK FOR SKY130
+            if function is None and inst.kind.startswith("sky130_fd_sc_hd__dlclkp_"):
+                function = "1"
             transform_function_rec(hooked, function, inst, f)
-
 
 def netlist_to_bench(
     netlist: nl_parser.Netlist,
