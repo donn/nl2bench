@@ -114,6 +114,7 @@ def statements_to_bench(inst: nl_parser.Instance, base: Cell, f: TextIOWrapper):
                 function = "1"
             transform_function_rec(hooked, function, inst, f)
 
+
 def netlist_to_bench(
     netlist: nl_parser.Netlist,
     cells: Dict[str, Cell],
