@@ -88,20 +88,30 @@ def transform_function_rec(
         )
 
 
-def io_to_bench(port: nl_parser.Port, f: TextIOWrapper):
+def io_to_bench(port: nl_parser.Port, f: TextIOWrapper, msb_first: bool = False):
     if port.msb is None:
         print(f"{port.direction.upper()}({n(port.name)})", file=f)
     else:
-        frm, to = min(port.msb, port.lsb), max(port.lsb, port.msb)
-        i = frm
-        while i <= to:
-            print(f"{port.direction.upper()}({n(port.name)}[{i}])", file=f)
-            i += 1
+        if msb_first:
+            frm, to = max(port.msb, port.lsb), min(port.lsb, port.msb)
+            i = frm
+            while i >= to:
+                print(f"{port.direction.upper()}({n(port.name)}[{i}])", file=f)
+                i -= 1
+        else:
+            frm, to = min(port.msb, port.lsb), max(port.lsb, port.msb)
+            i = frm
+            while i <= to:
+                print(f"{port.direction.upper()}({n(port.name)}[{i}])", file=f)
+                i += 1
 
 
 def statements_to_bench(inst: nl_parser.Instance, base: Cell, f: TextIOWrapper):
     for output, function in base.outputs.items():
         if hooked := inst.io.get(output):
+            # HACK FOR SKY130
+            if function is None and inst.kind.startswith("sky130_fd_sc_hd__dlclkp_"):
+                function = "1"
             transform_function_rec(hooked, function, inst, f)
 
 
@@ -110,6 +120,7 @@ def netlist_to_bench(
     cells: Dict[str, Cell],
     f: TextIOWrapper,
     bypass_ios: Optional[Set[str]] = None,
+    msb_first: bool = False,
 ):
     bypass_ios = bypass_ios or set()
     print(f"# module {netlist.module}", file=f)
@@ -117,7 +128,7 @@ def netlist_to_bench(
     for port in netlist.ports.values():
         if port.name in bypass_ios:
             continue
-        io_to_bench(port, f)
+        io_to_bench(port, f, msb_first)
     for inst in netlist.instances:
         assert (
             inst.kind in cells
@@ -138,6 +149,7 @@ def verilog_netlist_to_bench(
     lib_files: Iterable[str],
     f: TextIOWrapper,
     bypass_ios: Optional[Set[str]] = None,
+    msb_first: bool = False,
 ):
     cells: Dict[str, Cell] = functools.reduce(
         lambda acc, path: acc.update(Cell.from_lib_file(path)) or acc,
@@ -147,4 +159,4 @@ def verilog_netlist_to_bench(
 
     netlist = nl_parser.parse(netlist_in)
 
-    netlist_to_bench(netlist, cells, f, bypass_ios)
+    netlist_to_bench(netlist, cells, f, bypass_ios, msb_first)
