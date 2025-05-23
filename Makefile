@@ -11,7 +11,7 @@ dist: venv/manifest.txt $(PARSERS)
 parsers: $(PARSERS)
 
 _nl2bench_antlr4_liblogic/LogicParser.py: grammars/lib/logic.g4
-	cd $$(dirname $<); antlr4 -Dlanguage=Python3 -visitor logic.g4 -o $(PWD)/$(@D)
+	cd $$(dirname $<); $(ANTLR4) -Dlanguage=Python3 -visitor logic.g4 -o $(PWD)/$(@D)
 	
 .PHONY: lint
 lint: venv/manifest.txt
