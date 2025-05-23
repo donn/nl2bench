@@ -37,8 +37,6 @@ class _Visitor(logicVisitor):
             # guaranteed to be and at this point
             return ("&", self.visit(ctx.children[0]), self.visit(ctx.children[1]))
         operator = children[1]
-        if operator == "|":
-            operator = "+"
         return (operator, self.visit(ctx.children[0]), self.visit(ctx.children[2]))
 
 

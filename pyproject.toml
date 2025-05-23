@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nl2bench"
-version = "0.9.0"
+version = "0.9.1"
 description = "Converts from combinational netlists to the BENCH format for DFT"
 authors = ["Mohamed Gaber <donn@efabless.com>"]
 license = "Apache-2.0"
