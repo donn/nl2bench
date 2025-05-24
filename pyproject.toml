@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "nl2bench"
-version = "0.9.1"
+version = "0.9.2"
 description = "Converts from combinational netlists to the BENCH format for DFT"
-authors = ["Mohamed Gaber <donn@efabless.com>"]
+authors = ["Mohamed Gaber <me@donn.website>"]
 license = "Apache-2.0"
 readme = "Readme.md"
 include = ["_nl2bench_antlr4_liblogic/*.py", "_nl2bench_antlr4_verilog/*.py"]
@@ -13,7 +13,7 @@ click = ">=8,<9"
 antlr4-python3-runtime = "==4.9.*"
 libparse = "^0.3.1"
 frozendict = "^2.4.4"
-pyosys = "^0.46"
+pyosys = ">=0.46"
 
 [tool.poetry.dev-dependencies]
 wheel = "*"
