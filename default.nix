@@ -1,8 +1,9 @@
 {
+  lib,
+  flake,
   click,
   libparse,
   black,
-  lib,
   nix-gitignore,
   buildPythonPackage,
   poetry-core,
@@ -17,10 +18,10 @@
 }:
   buildPythonPackage {
     name = "nl2bench";
-    version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).tool.poetry.version;
+    version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;
     format = "pyproject";
 
-    src = nix-gitignore.gitignoreSourcePure ./.gitignore ./.;
+    src = flake;
 
     nativeBuildInputs = [
       poetry-core

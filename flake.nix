@@ -1,3 +1,5 @@
+# Adapted from nix-eda
+#
 # Copyright 2023 Efabless Corporation
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,23 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 {
-  nixConfig = {
-    extra-substituters = [
-      "https://openlane.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "openlane.cachix.org-1:qqdwh+QMNGmZAuyeQJTH9ErW57OWSvdtuwfBKdS254E="
-    ];
-  };
-
   inputs = {
-    nix-eda.url = github:efabless/nix-eda;
+    nix-eda.url = "github:fossi-foundation/nix-eda";
     quaigh = {
-      url = github:coloquinte/quaigh;
+      url = "github:coloquinte/quaigh";
       inputs.nixpkgs.follows = "nix-eda/nixpkgs";
     };
     libparse = {
-      url = github:efabless/libparse-python;
+      url = "github:efabless/libparse-python";
       inputs.nixpkgs.follows = "nix-eda/nixpkgs";
     };
   };
@@ -49,7 +42,9 @@
         (nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
           callPythonPackage = lib.callPackageWith (pkgs' // pkgs'.python3.pkgs);
         in {
-          nl2bench = callPythonPackage ./default.nix {};
+          nl2bench = callPythonPackage ./default.nix {
+            flake = self;
+          };
         }))
       ];
     };

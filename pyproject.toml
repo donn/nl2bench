@@ -1,11 +1,31 @@
-[tool.poetry]
+[project]
 name = "nl2bench"
-version = "0.9.2"
+version = "0.10.0"
 description = "Converts from combinational netlists to the BENCH format for DFT"
-authors = ["Mohamed Gaber <me@donn.website>"]
+authors = [
+    {name = "Mohamed Gaber", email = "me@donn.website"}
+]
 license = "Apache-2.0"
 readme = "Readme.md"
-include = ["_nl2bench_antlr4_liblogic/*.py", "_nl2bench_antlr4_verilog/*.py"]
+requires-python = ">=3.8"
+
+[project.urls]
+repository = "https://github.com/donn/nl2bench"
+"Bug Tracker" = "https://github.com/donn/nl2bench/issues"
+
+[project.scripts]
+nl2bench = "nl2bench.__main__:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+include = [
+    {path = "nl2bench/_nl2bench_antlr4_liblogic/*.py", format = ["sdist", "wheel"]},
+    {path = "nl2bench/_nl2bench_antlr4_liblogic/*.interp", format = ["sdist", "wheel"]},
+    {path = "nl2bench/_nl2bench_antlr4_liblogic/*.tokens", format = ["sdist", "wheel"]}
+]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4"
@@ -15,7 +35,7 @@ libparse = "^0.3.1"
 frozendict = "^2.4.4"
 pyosys = ">=0.46"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 wheel = "*"
 black = ">=24.4.0,<25"
 
@@ -25,10 +45,3 @@ flake8-pytest-style = "*"
 pytest = "*"
 pytest-xdist = "*"
 pytest-cov = "*"
-
-[tool.poetry.scripts]
-nl2bench = "nl2bench.__main__:cli"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"

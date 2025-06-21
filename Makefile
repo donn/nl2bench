@@ -1,16 +1,17 @@
 PYTHON3 ?= python3
 ANTLR4 ?= antlr4
-PARSERS ?= _nl2bench_antlr4_liblogic/LogicParser.py
+PARSERS ?= nl2bench/_nl2bench_antlr4_liblogic/LogicParser.py
 
 all: dist
 
 .PHONY: dist
 dist: venv/manifest.txt $(PARSERS)
-	./venv/bin/poetry build
+	PYTHONPATH= ./venv/bin/poetry build
 	
 parsers: $(PARSERS)
 
-_nl2bench_antlr4_liblogic/LogicParser.py: grammars/lib/logic.g4
+nl2bench/_nl2bench_antlr4_liblogic/LogicParser.py: grammars/lib/logic.g4
+	mkdir -p $$(dirname $<)
 	cd $$(dirname $<); $(ANTLR4) -Dlanguage=Python3 -visitor logic.g4 -o $(PWD)/$(@D)
 	
 .PHONY: lint
