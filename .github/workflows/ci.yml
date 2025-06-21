@@ -34,7 +34,7 @@ jobs:
       - name: Set Up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.10"
       - name: Install Dependencies
         run: |
           curl -LO https://github.com/antlr/website-antlr4/raw/gh-pages/download/antlr-4.9.3-complete.jar
