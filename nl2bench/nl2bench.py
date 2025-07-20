@@ -65,7 +65,7 @@ def transform_function_rec(
                 f"{current_output} = BUF({handle_argument(current_function)})",
                 file=f,
             )
-    elif current_function[0] == "!":
+    elif current_function[0] in ("~", "!"):
         print(f"{current_output} = NOT({handle_argument(current_function[1])})", file=f)
     elif current_function[0] in ("&", "*"):
         print(
@@ -77,7 +77,7 @@ def transform_function_rec(
             f"{current_output} = XOR({handle_argument(current_function[1])} , {handle_argument(current_function[2])})",
             file=f,
         )
-    elif current_function[0] in ("+", "|"):
+    elif current_function[0] in ("|", "+"):
         print(
             f"{current_output} = OR({handle_argument(current_function[1])} , {handle_argument(current_function[2])})",
             file=f,

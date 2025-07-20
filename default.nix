@@ -11,41 +11,49 @@
   frozendict,
   pytest,
   coverage,
-  yosys,
+  pyosys,
   quaigh,
   antlr4_9,
   antlr4_9-runtime,
+  pytestCheckHook,
 }:
-  buildPythonPackage {
-    name = "nl2bench";
-    version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;
-    format = "pyproject";
+buildPythonPackage {
+  name = "nl2bench";
+  version = (builtins.fromTOML (builtins.readFile ./pyproject.toml)).project.version;
+  format = "pyproject";
 
-    src = flake;
+  src = flake;
 
-    nativeBuildInputs = [
-      poetry-core
-      antlr4_9
-    ];
+  nativeBuildInputs = [
+    poetry-core
+    antlr4_9
+  ];
 
-    propagatedBuildInputs = [
-      antlr4_9-runtime
-      click
-      libparse
-      frozendict
-      yosys.pyosys
-    ];
+  nativeCheckInputs = [
+    pytest
+    black
+    quaigh
+    pytestCheckHook
+  ];
 
-    nativeCheckInputs = [
-      pytest
-      black
-      quaigh
-    ];
+  dependencies = [
+    antlr4_9-runtime
+    click
+    libparse
+    frozendict
+    pyosys
+  ];
 
-    preBuild = "make parsers";
-    checkPhase = "pytest";
+  doCheck = true; # OoMs in CI
 
-    meta = {
-      mainProgram = "nl2bench";
-    };
-  }
+  preBuild = ''
+    make parsers
+  '';
+
+  meta = {
+    description = "converts a subset of the Verilog language commonly used for Netlists to the Bench format";
+    mainProgram = "nl2bench";
+    license = lib.licenses.asl20;
+    platforms = lib.platforms.all;
+  };
+}

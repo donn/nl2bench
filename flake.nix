@@ -38,9 +38,12 @@
   in {
     overlays = {
       default = lib.composeManyExtensions [
-        (nix-eda.flakesToOverlay [libparse quaigh]) 
+        # Using quaigh as an overlaigh here requires me to propagate the
+        # cargo2nix overlay here too and I can think of about 80 better things
+        # to do with my time
+        (nix-eda.flakesToOverlay [libparse quaigh])
         (nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
-          callPythonPackage = lib.callPackageWith (pkgs' // pkgs'.python3.pkgs);
+          callPythonPackage = lib.callPackageWith (pkgs' // pypkgs');
         in {
           nl2bench = callPythonPackage ./default.nix {
             flake = self;

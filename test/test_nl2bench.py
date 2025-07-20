@@ -14,16 +14,18 @@ import gzip
         ("osu035", "aes128"),
     ],
 )
-def testy_basic(
+def test_basic(
     scl,
     design,
 ):
     netlist = os.path.join(pytest.test_root, "designs", design, scl, "nl.v.gz")
     lib = os.path.join(pytest.test_root, "tech", f"{scl}.lib")
     expected = os.path.join(pytest.test_root, "designs", design, scl, "nl.bench.gz")
-    with NamedTemporaryFile("w", suffix=".bench") as f, NamedTemporaryFile(
-        "wb", suffix=".expected.bench"
-    ) as expected_x, gzip.open(expected, "rb") as expected_c:
+    with (
+        NamedTemporaryFile("w", suffix=".bench") as f,
+        NamedTemporaryFile("wb", suffix=".expected.bench") as expected_x,
+        gzip.open(expected, "rb") as expected_c,
+    ):
         expected_x.write(expected_c.read())
 
         verilog_netlist_to_bench(netlist, [lib], f)
