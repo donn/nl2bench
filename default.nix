@@ -8,7 +8,7 @@
   buildPythonPackage,
   poetry-core,
   setuptools,
-  frozendict,
+  immutabledict,
   pytest,
   coverage,
   pyosys,
@@ -40,7 +40,7 @@ buildPythonPackage {
     antlr4_9-runtime
     click
     libparse
-    frozendict
+    immutabledict
     pyosys
   ];
 

@@ -20,16 +20,11 @@
       url = "github:coloquinte/quaigh";
       inputs.nixpkgs.follows = "nix-eda/nixpkgs";
     };
-    libparse = {
-      url = "github:efabless/libparse-python";
-      inputs.nixpkgs.follows = "nix-eda/nixpkgs";
-    };
   };
 
   outputs = {
     self,
     nix-eda,
-    libparse,
     quaigh,
     ...
   }: let
@@ -41,10 +36,11 @@
         # Using quaigh as an overlaigh here requires me to propagate the
         # cargo2nix overlay here too and I can think of about 80 better things
         # to do with my time
-        (nix-eda.flakesToOverlay [libparse quaigh])
+        (nix-eda.flakesToOverlay [quaigh])
         (nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
           callPythonPackage = lib.callPackageWith (pkgs' // pypkgs');
         in {
+          libparse = callPythonPackage ./nix/libparse.nix {};
           nl2bench = callPythonPackage ./default.nix {
             flake = self;
           };

@@ -62,27 +62,6 @@
         "type": "github"
       }
     },
-    "libparse": {
-      "inputs": {
-        "nixpkgs": [
-          "nix-eda",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1713178934,
-        "narHash": "sha256-1w6HBBE2bWAD0GM98O8WZRmZDW9+EzD0KFvnnH2ho/k=",
-        "owner": "efabless",
-        "repo": "libparse-python",
-        "rev": "cec8b6dfd3d1c97bc5ccd1d0a41c44e51bc9c1eb",
-        "type": "github"
-      },
-      "original": {
-        "owner": "efabless",
-        "repo": "libparse-python",
-        "type": "github"
-      }
-    },
     "nix-eda": {
       "inputs": {
         "nixpkgs": "nixpkgs"
@@ -142,7 +121,6 @@
     },
     "root": {
       "inputs": {
-        "libparse": "libparse",
         "nix-eda": "nix-eda",
         "quaigh": "quaigh"
       }

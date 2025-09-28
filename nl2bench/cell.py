@@ -15,93 +15,98 @@ from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 from libparse import LibertyParser, LibertyAst
-import frozendict
+from immutabledict import immutabledict
 
 from .lib_fn_parser import parse
 
 
-def lib_group_as_dict(entry) -> dict:
-    retval = {
-        "args": tuple(entry.args),
-    }
+def lib_group_as_dict(entry: LibertyAst) -> immutabledict:
+    retval = {}
+    if len(entry.args):
+        retval["args"] = tuple(arg.strip('"') for arg in entry.args)
     for child in entry.children:
-        value = child.value
-        if isinstance(value, LibertyAst):
-            value = lib_group_as_dict(value)
-        retval[child.id] = child.value
-    return retval
+        if len(child.value):
+            retval[child.id] = child.value.strip('"')
+            continue
+        if len(child.children):
+            retval.setdefault(child.id, tuple())
+            retval[child.id] = (*retval[child.id], lib_group_as_dict(child))
+    return immutabledict(retval)
 
 
 @dataclass(frozen=True)
 class TestInfo:
-    testing_ff: frozendict.frozendict
+    testing_ff: immutabledict
     sco: str
     sci: str
     sce: str
 
 
-@dataclass
+@dataclass(frozen=True)
 class Cell:
     inputs: List[str]
     outputs: Dict[str, Optional[tuple]]
     inouts: List[str]
-    register_info: Optional[Tuple[str, frozendict.frozendict]]
+    register_info: Optional[Tuple[str, immutabledict]]
     test_info: Optional[TestInfo]
-    raw: frozendict.frozendict
+    raw: immutabledict
 
     @staticmethod
     def _from_ast(cell_ast) -> "Cell":
-        name = cell_ast.args[0]
         raw = lib_group_as_dict(cell_ast)
+        cell_args = raw["args"]
+        name = cell_args[0]
 
         inputs = []
         outputs = {}
         inouts = []
         register_info = None
         test_info = None
-        for cell_element in cell_ast.children:
-            if cell_element.id in ["ff", "latch"]:
-                register_info = (
-                    cell_element.id,
-                    frozendict.deepfreeze(lib_group_as_dict(cell_element)),
-                )
-        for cell_element in cell_ast.children:
-            if cell_element.id == "test_cell":
-                test_info_dict = {}
-                for test_element in cell_element.children:
-                    if test_element.id == "ff":
-                        test_info_dict["testing_ff"] = frozendict.deepfreeze(
-                            lib_group_as_dict(test_element)
-                        )
-                    elif test_element.id == "pin":
-                        pin_info = lib_group_as_dict(test_element)
-                        pin_name = test_element.args[0]
-                        if sigtype := pin_info.get("signal_type"):
-                            if sigtype == "test_scan_out":
-                                test_info_dict["sco"] = pin_name
-                            elif sigtype == "test_scan_in":
-                                test_info_dict["sci"] = pin_name
-                            elif sigtype == "test_scan_enable":
-                                test_info_dict["sce"] = pin_name
-                test_info = TestInfo(**test_info_dict)
-            if cell_element.id == "pin":
+        for id, info in raw.items():
+            if id in ["ff", "latch"]:
+                register_info = (id, info)
+        if test_cell_info := raw.get("test_cell"):
+            test_info_dict = {}
+
+            assert len(test_cell_info) == 1
+            test_cell_info = test_cell_info[0]
+
+            ff_info = test_cell_info.get("ff")
+            assert len(ff_info) == 1
+            ff_info = ff_info[0]
+            test_info_dict["testing_ff"] = ff_info
+
+            for pin in test_cell_info["pin"]:
+                pin_name = pin["args"][0]
+                if sigtype := pin.get("signal_type"):
+                    if sigtype == "test_scan_out":
+                        test_info_dict["sco"] = pin_name
+                    elif sigtype == "test_scan_in":
+                        test_info_dict["sci"] = pin_name
+                    elif sigtype == "test_scan_enable":
+                        test_info_dict["sce"] = pin_name
+            test_info = TestInfo(**test_info_dict)
+        if pin_info := raw.get("pin"):
+            for pin in pin_info:
+                pin_args = pin["args"]
+                pin_name = pin_args[0]
                 function = None
                 direction = None
-                for pin_element in cell_element.children:
-                    if pin_element.id == "direction":
-                        direction = pin_element.value
-                    if pin_element.id == "function":
-                        function = pin_element.value
+                for pin_element_id, pin_element in pin.items():
+                    if pin_element_id == "direction":
+                        direction = pin_element
+                    if pin_element_id == "function":
+                        function = pin_element
 
                 if direction == "input":
-                    inputs.append(cell_element.args[0])
+                    inputs.append(pin_name)
                 elif direction == "output":
                     if fn := function:
-                        outputs[cell_element.args[0]] = parse(fn)
+                        outputs[pin_name] = parse(fn)
                     else:
-                        outputs[cell_element.args[0]] = None
+                        outputs[pin_name] = None
                 else:
-                    inouts.append(cell_element.args)
+                    inouts.append(pin_name)
 
         return name, Cell(inputs, outputs, inouts, register_info, test_info, raw)
 
