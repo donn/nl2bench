@@ -15,9 +15,9 @@
 # limitations under the License.
 {
   inputs = {
-    nix-eda.url = "github:fossi-foundation/nix-eda";
+    nix-eda.url = "github:fossi-foundation/nix-eda/6.0.2";
     quaigh = {
-      url = "github:coloquinte/quaigh";
+      url = "github:donn/quaigh/nixos_25.11";
       inputs.nixpkgs.follows = "nix-eda/nixpkgs";
     };
   };
@@ -36,7 +36,7 @@
         # Using quaigh as an overlaigh here requires me to propagate the
         # cargo2nix overlay here too and I can think of about 80 better things
         # to do with my time
-        (nix-eda.flakesToOverlay [quaigh])
+        (quaigh.overlays.default)
         (nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
           callPythonPackage = lib.callPackageWith (pkgs' // pypkgs');
         in {

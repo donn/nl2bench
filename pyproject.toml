@@ -33,7 +33,7 @@ click = ">=8,<9"
 antlr4-python3-runtime = "==4.9.*"
 lln_libparse = "==0.56.*"
 immutabledict = "*"
-pyosys = "==0.56.*"
+pyosys = "==0.60.*"
 
 [tool.poetry.group.dev.dependencies]
 wheel = "*"

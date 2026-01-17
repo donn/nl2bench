@@ -138,15 +138,17 @@ def parse(verilog_netlist: Path):
         )
 
     assignments: List[Tuple[str, str]] = []
-    for conn_from, conn_to in ys_module.connections():
-        for bit_from, bit_to in zip(conn_from.bits(), conn_to.bits()):
+    for conn_from, conn_to in ys_module.connections_:
+        for i in range(0, conn_from.size()):
+            bit_from = conn_from.extract(i).as_bit()
+            bit_to = conn_to.extract(i).as_bit()
             assignments.append((_dump_sigbit(bit_from), _dump_sigbit(bit_to)))
 
     instances: List[Instance] = []
     for cell_idstr in ys_module.cells_:
         cell = ys_module.cell(cell_idstr)
         instance_io = {}
-        for port_idstr, spec in cell.connections().items():
+        for port_idstr, spec in cell.connections_.items():
             instance_io[_clean_str(port_idstr)] = _dump_sigchunk(spec.as_chunk())
         cell_name = _clean_str(cell.name)
         cell_type = _clean_str(cell.type)
