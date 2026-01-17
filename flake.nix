@@ -33,9 +33,6 @@
   in {
     overlays = {
       default = lib.composeManyExtensions [
-        # Using quaigh as an overlaigh here requires me to propagate the
-        # cargo2nix overlay here too and I can think of about 80 better things
-        # to do with my time
         (quaigh.overlays.default)
         (nix-eda.composePythonOverlay (pkgs': pkgs: pypkgs': pypkgs: let
           callPythonPackage = lib.callPackageWith (pkgs' // pypkgs');
