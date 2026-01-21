@@ -18,6 +18,7 @@
   buildPythonPackage,
   pybind11,
   pytestCheckHook,
+  setuptools,
   fetchPypi,
   version ? "0.56.0",
   sha256 ? "sha256-diJCTDGODfwlOn7oQdKk/f2fvO/QfXuVg0e7/C7N2iw=",
@@ -25,6 +26,9 @@
 buildPythonPackage {
   pname = "libparse";
   inherit version;
+
+  pyproject = true;
+  build-system = [ setuptools ];
 
   src = fetchPypi {
     pname = "lln_libparse";

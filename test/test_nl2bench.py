@@ -12,6 +12,7 @@ import gzip
         ("osu035", "s298"),
         ("osu035", "spm"),
         ("osu035", "aes128"),
+        ("sky130_fd_sc_hd", "picorv32"),
     ],
 )
 def test_basic(
