@@ -1,6 +1,6 @@
 [project]
 name = "nl2bench"
-version = "0.12.0"
+version = "0.13.0"
 description = "Converts from combinational netlists to the BENCH format for DFT"
 authors = [
     {name = "Mohamed Gaber", email = "me@donn.website"}
